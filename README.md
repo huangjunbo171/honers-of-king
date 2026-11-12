@@ -1,1 +1,1 @@
-﻿# honers of king
+# honers of king
