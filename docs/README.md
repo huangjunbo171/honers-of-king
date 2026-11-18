@@ -8,7 +8,7 @@
 2. [4.2 构建智能体](task1-baseline.md)按文件列出归一化、英雄、机关、四项奖励以及验证用例。
 3. [4.3 策略优化](task2-optimization.md)列出九项奖励、小兵特征、全局特征和调参方式。
 
-在真实任务包中，先以 `agent_ppo/`、`TODO`、`set_cur_calc_frame_vec`、`get_reward` 和 `REWARD_WEIGHT_DICT` 为入口定位实现。用代码包中的字段、枚举和模型尺寸确定接入方式。文档中的 Python 代码块是独立参考实现，可用合成帧核对公式和分支。平台包含 Gamecore、训练工作流、PPO 模型以及评估环境。
+仓库已接入 V63.0.9 任务一代码。从 [PPO 智能体入口](../agent_ppo/agent.py) 可追踪观测、动作与循环状态，从 [奖励管理器](../agent_ppo/feature/reward_process.py) 可追踪逐帧奖励。[离线测试](../tests/test_task1.py)提供合成帧和损失算例。
 
 ## 资料索引
 

@@ -1,12 +1,12 @@
 # 4.2 构建智能体（Task1）
 
-适用入口是教学任务包 `hok_1v1_exp/agent_ppo/`。手册把特征处理和奖励设计放在 Task1，PPO 算法、LSTM 模型和训练工作流由任务包提供。课程运行页显示 `V63.0.9`，教师版的四项基础奖励说明同时指向 `63.0.9` 和 `63.0.10`。[学生版 §2.1、§3.1–3.3](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954918&projectId=36818) · [教师版 §3.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954919&projectId=36818)
+当前代码入口是 [agent_ppo](../agent_ppo/)。手册主要讲解特征和奖励。V63.0.9 代码包还要求补齐敌方英雄编码、LSTM 和 PPO 损失，本仓库的[模型实现](../agent_ppo/model/model.py)包含这些部分。课程运行页显示 `V63.0.9`，教师版的四项基础奖励说明同时指向 `63.0.9` 和 `63.0.10`。[学生版 §2.1、§3.1–3.3](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954918&projectId=36818) · [教师版 §3.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954919&projectId=36818)
 
-## 文件与 TODO
+## 任务一实现位置
 
 以下路径以 `agent_ppo/` 为起点。
 
-| 文件 | TODO 与数据 |
+| 文件 | 课程任务与数据 |
 | --- | --- |
 | `feature/feature_process/feature_normalizer.py` | 1.1 `one_hot(value, value_list, compare_method)` 按 `value_list` 的顺序编码，比较方法为 `eq`。1.2 `min_max(value, min_value, max_value)` 将范围映射到 `[0, 1]`，先检查下界，再检查上界。 |
 | `feature/feature_process/hero_process.py` | 2.1 遍历 `frame_state["hero_states"]`，按 `camp` 分类，使用 `config_id` 作为键并排序。2.2–2.3 对照 `get_from_actor_state` 和 `get_from_actor_state_values` 的调用读取 `hero[feature_name]`。2.4–2.6 分别提取血量比、`float(level)`、`float(hp > 0)`。2.7–2.8 提取 `location["x"]` 和 `location["z"]` 并转换阵营坐标。 |
@@ -97,8 +97,9 @@ def weighted_reward(terms, weights):
 | --- | ---: | ---: | ---: | ---: |
 | 学生版初值 | 0.0 | 1.0 | 0.0 | 0.0 |
 | 教师版原值 | 0.01 | 5.0 | -0.6 | -1.0 |
+| 仓库实现 | 0.01 | 5.0 | +0.6 | -1.0 |
 
-教师版文字把击杀描述为正奖励。按同一手册的 `kill_cnt` 和零和增量公式代入，我方击杀对应的 `kill` 加权项为 `1 × -0.6 = -0.6`。同一帧若对手死亡计数也加 1，`death` 项为 `-1 × -1.0 = +1.0`，两项合计 `+0.4`。如果设计要求 `kill` 单项奖励我方击杀，使用正权重并同时校验击杀与死亡的合计量级。用实际奖励日志核对计数来源和符号。[学生版 §3.2.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954918&projectId=36818) · [教师版 §3.2.1–3.2.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954919&projectId=36818)
+教师版文字把击杀描述为正奖励。按同一手册的 `kill_cnt` 和零和增量公式代入，我方击杀对应的 `kill` 加权项为 `1 × -0.6 = -0.6`。同一帧若对手死亡计数也加 1，`death` 项为 `-1 × -1.0 = +1.0`，两项合计 `+0.4`。仓库按手册的文字目标把击杀权重设为 +0.6。一次己方击杀伴随敌方死亡时，两项合计 +1.6。[学生版 §3.2.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954918&projectId=36818) · [教师版 §3.2.1–3.2.2](https://tencentarena.com/p/edu/course-content/7129/7288/209107?fileId=954919&projectId=36818)
 
 ## 启动训练前核对
 
