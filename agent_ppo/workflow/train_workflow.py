@@ -8,6 +8,7 @@ Author: Tencent AI Arena Authors
 """
 
 
+import logging
 import os
 import time
 import random
@@ -74,7 +75,7 @@ class EpisodeRunner:
     def __init__(self, env, agents, logger, monitor, env_conf_manager, lineup_iterator):
         self.env = env
         self.agents = agents
-        self.logger = logger
+        self.logger = logger if logger is not None else logging.getLogger(__name__)
         self.monitor = monitor
         self.env_conf_manager = env_conf_manager
         self.lineup_iterator = lineup_iterator
@@ -198,13 +199,13 @@ class EpisodeRunner:
                             )
 
                     now = time.time()
-                    if now - self.last_report_monitor_time >= 60:
+                    # An evaluation can finish between periodic training reports.
+                    if self.monitor and (is_eval or now - self.last_report_monitor_time >= 60):
                         monitor_data = {"episode_cnt": self.episode_cnt}
-                        if self.monitor:
-                            if is_eval:
-                                monitor_data["reward"] = round(reward_sum_list[monitor_side], 2)
-                            self.monitor.put_data({os.getpid(): monitor_data})
-                            self.last_report_monitor_time = now
+                        if is_eval:
+                            monitor_data["reward"] = round(reward_sum_list[monitor_side], 2)
+                        self.monitor.put_data({os.getpid(): monitor_data})
+                        self.last_report_monitor_time = now
 
                     # Sample process
                     # 进行样本处理，准备训练

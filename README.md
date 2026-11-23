@@ -18,3 +18,7 @@ python -m unittest discover -s tests -v
 ```
 
 真实对局由腾讯开悟提供 Gamecore 和平台 SDK。平台从 [PPO 工作流](agent_ppo/workflow/train_workflow.py) 读取[对局配置](agent_ppo/conf/train_env_conf.toml)。
+
+## 已训练模型与评估
+
+[PPO V1 与 V2 模型下载](https://github.com/huangjunbo171/honers-of-king/releases/tag/ppo-v1-v2) · [开悟对战结果](docs/results/ppo-v2-vs-v1.md)。V2 在本次 6 局评估中以 6:0 战胜 V1。

@@ -15,7 +15,6 @@ learn、save_model 和 load_model 对接平台的学习器和模型存储。
 import torch
 
 torch.set_num_threads(1)
-torch.set_num_interop_threads(1)
 
 import os
 from agent_ppo.model.model import Model

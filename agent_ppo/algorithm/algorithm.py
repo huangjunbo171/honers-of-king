@@ -39,9 +39,9 @@ class Algorithm:
         list_sample_data: list[SampleData]
         SampleData对象列表
         """
-        # Extract sample field from SampleData objects and stack into tensor
-        # 从 SampleData 对象中提取 sample 字段并 stack 成 tensor
-        _input_datas = torch.stack([sample.sample for sample in list_sample_data]).to(self.device)
+        # Accept NumPy samples from the collector and tensors from the SDK.
+        samples = [torch.as_tensor(sample.sample) for sample in list_sample_data]
+        _input_datas = torch.stack(samples).to(self.device)
         results = {}
 
         data_list = list(_input_datas.split(self.cut_points, dim=1))
